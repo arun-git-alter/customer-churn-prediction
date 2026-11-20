@@ -1,0 +1,31 @@
+
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+*.zip
+
+# Local outputs
+reports/figures/*
+!reports/figures/.gitkeep
+reports/eda/*
+!reports/eda/.gitkeep
+
+# Dataset files
+data/raw/*
+!data/raw/.gitkeep
+data/interim/*
+!data/interim/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Model files required for deployment
+models/*
+!models/.gitkeep
+!models/calibrated_model_config.json
+!models/random_forest_calibrated.pkl
+project_structure*.txt
+
+# Development notebooks
+notebooks/

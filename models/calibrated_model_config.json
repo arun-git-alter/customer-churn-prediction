@@ -1,0 +1,6 @@
+{
+    "model_name": "Sigmoid Calibrated Random Forest",
+    "calibration_method": "sigmoid",
+    "positive_class": "Yes",
+    "threshold": 0.5
+}

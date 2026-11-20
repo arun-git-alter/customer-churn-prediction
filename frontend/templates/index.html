@@ -1,0 +1,826 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ChurnPredict | Customer Intelligence API</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <a href="/" class="logo">
+            <span class="logo-icon">C</span>
+            CHURNPREDICT
+        </a>
+
+        <nav>
+            <a href="#overview">Overview</a>
+            <a href="#features">Features</a>
+            <a href="#documentation">Documentation</a>
+        </nav>
+
+        <a href="#playground" class="nav-button">Explore API ↗</a>
+    </header>
+
+
+    <main>
+
+        <section class="hero" id="overview">
+
+            <div class="hero-content">
+
+                <div class="status">
+                    <span class="status-dot"></span>
+                    MACHINE LEARNING POWERED API
+                </div>
+
+                <h1>
+                    Predict customer churn.
+                    <span>Before it happens.</span>
+                </h1>
+
+                <p class="hero-description">
+                    An intelligent customer churn prediction API that
+                    estimates churn probability, identifies customer
+                    risk levels and helps businesses make informed
+                    retention decisions.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="#playground" class="primary-button">
+                        Try the API ↗
+                    </a>
+
+                    <a href="#documentation" class="secondary-button">
+                        View Documentation
+                    </a>
+                </div>
+
+                <div class="hero-meta">
+                    <span>19 Input Features</span>
+                    <span>Calibrated Random Forest</span>
+                    <span>REST API</span>
+                </div>
+
+            </div>
+
+            <div class="hero-visual">
+
+                <div class="visual-card">
+
+                    <div class="visual-header">
+                        <span>Prediction Preview</span>
+                        <span class="live-indicator">SAMPLE</span>
+                    </div>
+
+                    <p class="visual-label">Illustrative prediction</p>
+
+                    <div class="probability">65.98%</div>
+
+                    <div class="progress-track">
+                        <div class="progress-fill"></div>
+                    </div>
+
+                    <div class="result-row">
+                        <span>Churn Probability</span>
+                        <strong>65.98%</strong>
+                    </div>
+
+                    <div class="result-row">
+                        <span>Prediction</span>
+                        <strong class="danger">Likely to Churn</strong>
+                    </div>
+
+                    <div class="result-row">
+                        <span>Risk Category</span>
+                        <strong class="danger">High Risk</strong>
+                    </div>
+
+                    <div class="visual-footer">
+                        Powered by Calibrated Random Forest
+                    </div>
+
+                </div>
+
+                <div class="floating-tag">
+                    <span class="status-dot"></span>
+                    Intelligent Predictions
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="stats" id="features">
+
+            <div class="stat-card">
+                <h2>19</h2>
+                <p>Customer Input Features</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>5</h2>
+                <p>Risk Classification Levels</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>01</h2>
+                <p>Prediction Endpoint</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>ML</h2>
+                <p>Calibrated ML Model</p>
+            </div>
+
+        </section>
+
+
+        
+<section class="endpoint-section" id="documentation">
+
+    <div class="section-heading">
+        <span class="eyebrow">DEVELOPER DOCUMENTATION</span>
+        <h2>Everything you need to integrate.</h2>
+        <p>
+            Explore the API endpoint, understand the request structure
+            and integrate churn predictions into your application.
+        </p>
+    </div>
+
+    <!-- API ENDPOINT -->
+    <div class="endpoint-card">
+
+        <div class="endpoint-title">
+            <span class="method">POST</span>
+            <code>/predict</code>
+            <span class="endpoint-status">Available</span>
+        </div>
+
+        <p>
+            Submit customer information and receive a churn prediction
+            with probability and risk classification.
+        </p>
+
+        <div class="api-info-grid">
+            <div>
+                <span>HTTP Method</span>
+                <strong>POST</strong>
+            </div>
+
+            <div>
+                <span>Content Type</span>
+                <strong>application/json</strong>
+            </div>
+
+            <div>
+                <span>Required Fields</span>
+                <strong>19 Features</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- REQUEST FORMAT -->
+    <div class="documentation-block">
+
+        <div class="documentation-heading">
+            <span class="eyebrow">01 / REQUEST</span>
+            <h3>Customer Input Parameters</h3>
+            <p>
+                Send all 19 customer features in JSON format.
+                Feature names and categorical values must match
+                the expected API input.
+            </p>
+        </div>
+
+        <div class="code-content">
+            <p>Example JSON Request</p>
+
+            <pre><code>{
+  "gender": "Male",
+  "SeniorCitizen": 0,
+  "Partner": "Yes",
+  "Dependents": "No",
+  "tenure": 12,
+  "PhoneService": "Yes",
+  "MultipleLines": "No",
+  "InternetService": "Fiber optic",
+  "OnlineSecurity": "No",
+  "OnlineBackup": "Yes",
+  "DeviceProtection": "No",
+  "TechSupport": "No",
+  "StreamingTV": "Yes",
+  "StreamingMovies": "Yes",
+  "Contract": "Month-to-month",
+  "PaperlessBilling": "Yes",
+  "PaymentMethod": "Electronic check",
+  "MonthlyCharges": 85.50,
+  "TotalCharges": 1026.00
+}</code></pre>
+        </div>
+
+    </div>
+
+    <!-- RESPONSE FORMAT -->
+    <div class="documentation-block">
+
+        <div class="documentation-heading">
+            <span class="eyebrow">02 / RESPONSE</span>
+            <h3>Prediction Output</h3>
+            <p>
+                The API returns the predicted churn probability,
+                binary prediction, churn label and risk category.
+            </p>
+        </div>
+
+        <div class="code-content">
+            <p>Example JSON Response</p>
+
+            <pre><code>{
+  "status": "success",
+  "prediction": {
+    "churn_probability": 0.6887,
+    "churn_prediction": 1,
+    "churn_label": "Yes",
+    "risk_category": "High Risk"
+  }
+}</code></pre>
+
+            <p class="code-note">
+                Illustrative response. Actual prediction values
+                depend on the submitted customer information.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- RISK CLASSIFICATION -->
+    <div class="documentation-block">
+
+        <div class="documentation-heading">
+            <span class="eyebrow">03 / RISK CLASSIFICATION</span>
+            <h3>Understanding Risk Levels</h3>
+            <p>
+                Customer risk is categorized using the predicted
+                churn probability.
+            </p>
+        </div>
+
+        <div class="risk-table">
+
+            <div class="risk-table-row">
+                <span class="risk-color very-low"></span>
+                <strong>Very Low Risk</strong>
+                <span>0% – below 20%</span>
+            </div>
+
+            <div class="risk-table-row">
+                <span class="risk-color low"></span>
+                <strong>Low Risk</strong>
+                <span>20% – below 40%</span>
+            </div>
+
+            <div class="risk-table-row">
+                <span class="risk-color medium"></span>
+                <strong>Medium Risk</strong>
+                <span>40% – below 60%</span>
+            </div>
+
+            <div class="risk-table-row">
+                <span class="risk-color high"></span>
+                <strong>High Risk</strong>
+                <span>60% – below 80%</span>
+            </div>
+
+            <div class="risk-table-row">
+                <span class="risk-color very-high"></span>
+                <strong>Very High Risk</strong>
+                <span>80% – 100%</span>
+            </div>
+
+        </div>
+
+        <p class="code-note">
+            Risk classification and binary churn prediction
+            are separate outputs. Binary prediction uses a
+            0.50 probability threshold.
+        </p>
+
+    </div>
+
+    <!-- STATUS CODES -->
+    <div class="documentation-block">
+
+        <div class="documentation-heading">
+            <span class="eyebrow">04 / ERROR HANDLING</span>
+            <h3>API Status Codes</h3>
+        </div>
+
+        <div class="status-list">
+
+            <div class="status-item">
+                <strong class="status-success">200</strong>
+                <div>
+                    <strong>Success</strong>
+                    <p>Customer prediction generated successfully.</p>
+                </div>
+            </div>
+
+            <div class="status-item">
+                <strong class="status-warning">400</strong>
+                <div>
+                    <strong>Bad Request</strong>
+                    <p>Missing or invalid customer input.</p>
+                </div>
+            </div>
+
+            <div class="status-item">
+                <strong class="status-error">500</strong>
+                <div>
+                    <strong>Internal Server Error</strong>
+                    <p>An unexpected server-side error occurred.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+<!-- API INTEGRATION EXAMPLES -->
+<div class="documentation-block">
+
+    <div class="documentation-heading">
+        <span class="eyebrow">05 / INTEGRATION</span>
+        <h3>Connect using Python</h3>
+        <p>
+            Use Python's requests library to send customer data
+            and receive a churn prediction.
+        </p>
+    </div>
+
+    <div class="code-content">
+        <p>Python Example</p>
+
+        <pre><code>import requests
+
+API_URL = "http://127.0.0.1:5000/predict"
+
+customer_data = {
+    "gender": "Male",
+    "SeniorCitizen": 0,
+    "Partner": "Yes",
+    "Dependents": "No",
+    "tenure": 12,
+    "PhoneService": "Yes",
+    "MultipleLines": "No",
+    "InternetService": "Fiber optic",
+    "OnlineSecurity": "No",
+    "OnlineBackup": "Yes",
+    "DeviceProtection": "No",
+    "TechSupport": "No",
+    "StreamingTV": "Yes",
+    "StreamingMovies": "Yes",
+    "Contract": "Month-to-month",
+    "PaperlessBilling": "Yes",
+    "PaymentMethod": "Electronic check",
+    "MonthlyCharges": 85.50,
+    "TotalCharges": 1026.00
+}
+
+response = requests.post(API_URL, json=customer_data)
+
+if response.status_code == 200:
+    result = response.json()
+    print(result)
+else:
+    print("Error:", response.status_code)
+    print(response.text)</code></pre>
+    </div>
+
+</div>
+
+
+<div class="documentation-block">
+
+    <div class="documentation-heading">
+        <span class="eyebrow">06 / INTEGRATION</span>
+        <h3>Connect using JavaScript</h3>
+        <p>
+            Use the Fetch API to submit customer information
+            and process the prediction response.
+        </p>
+    </div>
+
+    <div class="code-content">
+        <p>JavaScript Example</p>
+
+        <pre><code>const API_URL = "http://127.0.0.1:5000/predict";
+
+const customerData = {
+    gender: "Male",
+    SeniorCitizen: 0,
+    Partner: "Yes",
+    Dependents: "No",
+    tenure: 12,
+    PhoneService: "Yes",
+    MultipleLines: "No",
+    InternetService: "Fiber optic",
+    OnlineSecurity: "No",
+    OnlineBackup: "Yes",
+    DeviceProtection: "No",
+    TechSupport: "No",
+    StreamingTV: "Yes",
+    StreamingMovies: "Yes",
+    Contract: "Month-to-month",
+    PaperlessBilling: "Yes",
+    PaymentMethod: "Electronic check",
+    MonthlyCharges: 85.50,
+    TotalCharges: 1026.00
+};
+
+fetch(API_URL, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(customerData)
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error("API request failed: " + response.status);
+    }
+    return response.json();
+})
+.then(data => {
+    console.log("Prediction:", data.prediction);
+})
+.catch(error => {
+    console.error("Error:", error);
+});</code></pre>
+    </div>
+
+</div>
+
+
+<div class="documentation-block">
+
+    <div class="documentation-heading">
+        <span class="eyebrow">07 / QUICK START</span>
+        <h3>Before making an API request</h3>
+    </div>
+
+    <div class="status-list">
+
+        <div class="status-item">
+            <strong class="status-success">01</strong>
+            <div>
+                <strong>Start the Flask server</strong>
+                <p>Run your backend application locally.</p>
+            </div>
+        </div>
+
+        <div class="status-item">
+            <strong class="status-success">02</strong>
+            <div>
+                <strong>Prepare customer data</strong>
+                <p>Provide all 19 required input features.</p>
+            </div>
+        </div>
+
+        <div class="status-item">
+            <strong class="status-success">03</strong>
+            <div>
+                <strong>Send a POST request</strong>
+                <p>Submit the customer data to the /predict endpoint.</p>
+            </div>
+        </div>
+
+        <div class="status-item">
+            <strong class="status-success">04</strong>
+            <div>
+                <strong>Process the response</strong>
+                <p>Read the churn probability and risk classification.</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+
+
+            <div class="section-heading">
+                <span class="eyebrow">DEVELOPER ACCESS</span>
+                <h2>One endpoint. Powerful predictions.</h2>
+                <p>Integrate customer churn predictions into your own application.</p>
+            </div>
+
+            <div class="endpoint-card">
+
+                <div class="endpoint-title">
+                    <span class="method">POST</span>
+                    <code>/predict</code>
+                    <span class="endpoint-status">Available</span>
+                </div>
+
+                <div class="code-content">
+                    <p>Example request</p>
+
+                    <pre><code>{
+  "gender": "Male",
+  "tenure": 12,
+  "Contract": "Month-to-month",
+  "MonthlyCharges": 85.5,
+  "TotalCharges": 1026.0
+}</code></pre>
+
+                    <p class="code-note">
+                        Example excerpt only. The API requires all 19
+                        customer features.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        
+<section class="playground-section" id="playground">
+
+    <div class="section-heading">
+        <span class="eyebrow">INTERACTIVE API PLAYGROUND</span>
+        <h2>Test your customer.</h2>
+        <p>
+            Enter customer details to generate a churn prediction
+            using our calibrated machine learning model.
+        </p>
+    </div>
+
+    <form id="prediction-form">
+
+        <!-- PERSONAL INFORMATION -->
+        <div class="form-group">
+
+            <div class="form-group-heading">
+                <h3>01. Personal Information</h3>
+                <p>Basic customer details</p>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-field">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="SeniorCitizen">Senior Citizen</label>
+                    <select id="SeniorCitizen" name="SeniorCitizen" required>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="Partner">Has Partner</label>
+                    <select id="Partner" name="Partner" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="Dependents">Has Dependents</label>
+                    <select id="Dependents" name="Dependents" required>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- ACCOUNT INFORMATION -->
+        <div class="form-group">
+
+            <div class="form-group-heading">
+                <h3>02. Account Information</h3>
+                <p>Customer tenure and billing details</p>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-field">
+                    <label for="tenure">Tenure (Months)</label>
+                    <input type="number" id="tenure" name="tenure"
+                           min="1" max="72" step="1"
+                           value="12" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="Contract">Contract Type</label>
+                    <select id="Contract" name="Contract" required>
+                        <option value="Month-to-month">Month-to-month</option>
+                        <option value="One year">One year</option>
+                        <option value="Two year">Two year</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="PaperlessBilling">Paperless Billing</label>
+                    <select id="PaperlessBilling" name="PaperlessBilling" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="PaymentMethod">Payment Method</label>
+                    <select id="PaymentMethod" name="PaymentMethod" required>
+                        <option value="Electronic check">Electronic check</option>
+                        <option value="Mailed check">Mailed check</option>
+                        <option value="Bank transfer (automatic)">Bank transfer (automatic)</option>
+                        <option value="Credit card (automatic)">Credit card (automatic)</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- SERVICES -->
+        <div class="form-group">
+
+            <div class="form-group-heading">
+                <h3>03. Subscribed Services</h3>
+                <p>Telecom services used by the customer</p>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-field">
+                    <label for="PhoneService">Phone Service</label>
+                    <select id="PhoneService" name="PhoneService" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="MultipleLines">Multiple Lines</label>
+                    <select id="MultipleLines" name="MultipleLines" required>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No phone service">No phone service</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="InternetService">Internet Service</label>
+                    <select id="InternetService" name="InternetService" required>
+                        <option value="Fiber optic">Fiber optic</option>
+                        <option value="DSL">DSL</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="OnlineSecurity">Online Security</label>
+                    <select id="OnlineSecurity" name="OnlineSecurity" required>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No internet service">No internet service</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="OnlineBackup">Online Backup</label>
+                    <select id="OnlineBackup" name="OnlineBackup" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                        <option value="No internet service">No internet service</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="DeviceProtection">Device Protection</label>
+                    <select id="DeviceProtection" name="DeviceProtection" required>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No internet service">No internet service</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="TechSupport">Tech Support</label>
+                    <select id="TechSupport" name="TechSupport" required>
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No internet service">No internet service</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="StreamingTV">Streaming TV</label>
+                    <select id="StreamingTV" name="StreamingTV" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                        <option value="No internet service">No internet service</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="StreamingMovies">Streaming Movies</label>
+                    <select id="StreamingMovies" name="StreamingMovies" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                        <option value="No internet service">No internet service</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- FINANCIAL INFORMATION -->
+        <div class="form-group">
+
+            <div class="form-group-heading">
+                <h3>04. Financial Information</h3>
+                <p>Customer billing amounts</p>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-field">
+                    <label for="MonthlyCharges">Monthly Charges</label>
+                    <input type="number" id="MonthlyCharges"
+                           name="MonthlyCharges" min="0"
+                           step="0.01" value="85.50" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="TotalCharges">Total Charges</label>
+                    <input type="number" id="TotalCharges"
+                           name="TotalCharges" min="0"
+                           step="0.01" value="1026.00" required>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- SUBMIT -->
+        <div class="form-actions">
+
+            <p>
+                All 19 customer features are required.
+                Your information is processed for prediction
+                and is not stored in a customer database.
+            </p>
+
+            <button type="submit" id="predict-button">
+                Generate Churn Prediction →
+            </button>
+
+        </div>
+
+    </form>
+
+    <!-- Prediction results will appear here in the next task -->
+    <div id="prediction-result" aria-live="polite"></div>
+
+</section>
+
+
+    </main>
+
+
+    <footer>
+        <a href="/" class="logo">
+            <span class="logo-icon">C</span>
+            CHURNPREDICT
+        </a>
+
+        <p>Customer Churn Prediction API · Machine Learning Project</p>
+
+        <span>Built with Python, Flask and Scikit-learn</span>
+    </footer>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
