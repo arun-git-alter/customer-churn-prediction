@@ -76,4 +76,4 @@ After deployment, copy the Render service origin into `frontend/static/js/config
 
 ## Team
 
-The project report names four student authors: Arun Kumar Gupta (11232567), Khushi Singh (11232512), Ashmit Tanwar (11232575), and Archita Garg (11232560). It names Dr. Mohit Chhabra, Assistant Professor, as the project supervisor. Individual student roles, contributions, and coordination details were not assigned in the report, so those fields remain placeholders on `frontend/team.html`.
+The project report names four student authors: Arun Kumar Gupta (11232567), Khushi Singh (11232512), Ashmit Tanwar (11232575), and Archita Garg (11232560). It names Dr. Mohit Chhabra, Assistant Professor, as the project supervisor. The team reports that Arun Kumar Gupta and Ashmit Tanwar worked on the dataset, model, and API; Khushi Singh and Archita Garg worked on the UI and backend integration. The team coordination process is not documented and remains a placeholder on `frontend/team.html`.
