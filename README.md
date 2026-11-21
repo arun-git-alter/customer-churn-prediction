@@ -1,37 +1,79 @@
 # Customer Churn Prediction
 
-A customer churn classification project with a sigmoid-calibrated Random Forest, Flask prediction API, and static three-page showcase.
+A telecom customer churn classification project with a calibrated Random Forest, a Flask prediction API, and a responsive three-page project showcase.
+
+The website introduces the project, documents its methodology, presents the team, and includes a live form that submits customer profiles to the existing prediction API. The model returns a churn probability, a binary churn label, and a probability-based risk category.
 
 ## Project structure
 
-- `frontend/` — GitHub Pages website: Overview, Methodology, Team, and shared assets
-- `backend/` — Flask app, input validation, model loading, and prediction logic
-- `models/` — calibrated model and configuration required by the API
-- `data/` — local raw and processed telecom churn data
-- `notebooks/` — analysis and model development notebooks
+| Path | Purpose |
+| --- | --- |
+| `frontend/` | Static GitHub Pages site and shared HTML, CSS, and JavaScript assets |
+| `backend/` | Flask app, input validation, model loading, and prediction logic |
+| `models/` | Saved calibrated model and model configuration used by the API |
+| `data/` | Local raw and processed telecom churn data |
+| `notebooks/` | Local data exploration and model development notebooks |
+
+The deployed API expects 19 customer features. The field names, validation rules, model workflow, and risk bands are documented on the site’s [Methodology page](frontend/methodology.html).
 
 ## Run locally
 
-Install the dependencies in `requirements.txt`, then start Flask from the repository root:
+Use Python 3 and install the project dependencies from the repository root:
 
 ```bash
+python -m venv .venv
+```
+
+Activate the environment, then install dependencies and start Flask:
+
+```powershell
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
 python -m backend.app
 ```
 
-Open `http://127.0.0.1:5000`. The Flask app serves the static frontend and the existing `POST /predict` endpoint on the same origin.
+```bash
+# macOS or Linux
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m backend.app
+```
 
-## GitHub Pages and Render
+Open <http://127.0.0.1:5000>. Flask serves the static frontend and prediction API on the same origin. The model is loaded when the Flask application starts.
 
-The workflow at `.github/workflows/pages.yml` publishes `frontend/` to GitHub Pages. In the repository settings, select **GitHub Actions** as the Pages build and deployment source.
+## Prediction API
 
-Set the deployed Render service URL in `frontend/static/js/config.js`:
+- `POST /predict` accepts a JSON object containing all 19 model features.
+- Categorical values and numeric fields are validated by the backend.
+- A successful response includes `churn_probability`, `churn_prediction`, `churn_label`, and `risk_category`.
+- The binary classification threshold is `0.50`; risk categories use probability bands from below 20% through 80% and above.
+
+The local API test script, `test_api.py`, sends invalid and incomplete examples to a running server at `http://127.0.0.1:5000`.
+
+## Deploy the frontend to GitHub Pages
+
+The workflow at `.github/workflows/pages.yml` publishes the `frontend/` directory when changes are pushed to `main`. In the repository’s **Settings → Pages**, select **GitHub Actions** as the build and deployment source.
+
+Set the Render service origin in `frontend/static/js/config.js` before publishing:
 
 ```js
 window.CHURN_API_BASE_URL = "https://your-service.onrender.com";
 ```
 
-The value should be the service origin without a trailing slash. The frontend appends `/predict`. The Flask API's CORS allowlist must include the GitHub Pages site origin if that origin changes.
+Use the service origin without a trailing slash. The frontend appends `/predict`. Leave this setting blank for local Flask use, where the browser submits to the same-origin `/predict` route.
 
-## Team page
+The Flask CORS allowlist currently includes `https://arun-git-alter.github.io` and local Flask origins. If you use a custom GitHub Pages domain or another frontend origin, add that exact origin to `ALLOWED_ORIGINS` in `backend/app.py` and redeploy the backend.
 
-`frontend/team.html` contains marked placeholders because the repository does not include a verified team roster or contribution record. Replace those fields with project-approved names, roles, and responsibilities before presenting them as facts.
+## Deploy the API to Render
+
+Create a Render web service for this repository with:
+
+- **Build command:** `pip install -r requirements.txt`
+- **Start command:** `gunicorn backend.app:app`
+
+After deployment, copy the Render service origin into `frontend/static/js/config.js` and push the change so GitHub Pages deploys the updated frontend. The calibrated model artifact and its configuration are tracked in `models/` and are loaded by the Flask app at startup.
+
+## Team
+
+The project report names four student authors: Arun Kumar Gupta (11232567), Khushi Singh (11232512), Ashmit Tanwar (11232575), and Archita Garg (11232560). It names Dr. Mohit Chhabra, Assistant Professor, as the project supervisor. Individual student roles, contributions, and coordination details were not assigned in the report, so those fields remain placeholders on `frontend/team.html`.
