@@ -1,216 +1,110 @@
+(() => {
+  const form = document.getElementById("prediction-form");
+  if (!form) return;
 
-document.addEventListener("DOMContentLoaded", () => {
-    const predictionForm = document.getElementById("prediction-form");
-    const predictButton = document.getElementById("predict-button");
-    const predictionResult = document.getElementById("prediction-result");
+  const submitButton = document.getElementById("predict-button");
+  const resultRegion = document.getElementById("prediction-result");
+  const numericFields = ["SeniorCitizen", "tenure", "MonthlyCharges", "TotalCharges"];
 
-    if (!predictionForm || !predictButton || !predictionResult) {
-        console.error("Required HTML elements were not found.");
-        return;
+  const apiBaseUrl = String(window.CHURN_API_BASE_URL || "").trim().replace(/\/$/, "");
+  const predictUrl = `${apiBaseUrl}/predict`;
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+
+    const customer = Object.fromEntries(new FormData(form).entries());
+    numericFields.forEach((field) => { customer[field] = Number(customer[field]); });
+
+    setLoading(true);
+    resultRegion.innerHTML = '<div class="loading-message" role="status">Checking customer details with the prediction service…</div>';
+
+    try {
+      const response = await fetch(predictUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(customer)
+      });
+
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload.message || payload.error || `The prediction service returned ${response.status}.`);
+      }
+      if (payload.status !== "success" || !payload.prediction) {
+        throw new Error("The prediction service returned an unexpected response.");
+      }
+
+      renderPrediction(payload.prediction);
+    } catch (error) {
+      renderError(error);
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  function setLoading(isLoading) {
+    submitButton.disabled = isLoading;
+    submitButton.setAttribute("aria-busy", String(isLoading));
+    submitButton.innerHTML = isLoading
+      ? 'Generating prediction <span aria-hidden="true">…</span>'
+      : 'Generate prediction <span aria-hidden="true">→</span>';
+  }
+
+  function renderPrediction(prediction) {
+    const probability = Number(prediction.churn_probability);
+    const predicted = prediction.churn_prediction === 1;
+    const label = String(prediction.churn_label || "");
+    const risk = String(prediction.risk_category || "");
+    const expectedRiskCategories = ["Very Low Risk", "Low Risk", "Medium Risk", "High Risk", "Very High Risk"];
+
+    if (!Number.isFinite(probability) || probability < 0 || probability > 1) {
+      throw new Error("The prediction service returned an invalid probability.");
+    }
+    if (!expectedRiskCategories.includes(risk) || !["Yes", "No"].includes(label)) {
+      throw new Error("The prediction service returned an invalid prediction label or risk category.");
     }
 
-    // Submit customer data to the Flask prediction API
-    predictionForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
+    const percent = (probability * 100).toFixed(2);
+    const riskClass = risk.toLowerCase().replaceAll(" ", "-");
+    const resultJson = JSON.stringify(prediction, null, 2);
 
-        predictButton.disabled = true;
-        predictButton.textContent = "Predicting...";
+    resultRegion.innerHTML = `
+      <article class="prediction-card">
+        <div class="prediction-header"><h2>Prediction result</h2><span class="risk-badge ${riskClass}">${escapeHtml(risk)}</span></div>
+        <div class="probability-section"><p class="result-label">Churn probability</p><p class="probability-value">${percent}%</p>
+          <div class="risk-scale-track" role="img" aria-label="Churn probability ${percent} percent"><div class="risk-fill" style="width:${probability * 100}%"></div></div>
+          <div class="risk-scale-labels"><span>Very low</span><span>Low</span><span>Medium</span><span>High</span><span>Very high</span></div>
+        </div>
+        <div class="prediction-details">
+          <div class="detail-item"><span class="detail-label">Churn prediction</span><strong class="${predicted ? "churn-yes" : "churn-no"}">${escapeHtml(label)}</strong></div>
+          <div class="detail-item"><span class="detail-label">Risk category</span><strong>${escapeHtml(risk)}</strong></div>
+          <div class="detail-item"><span class="detail-label">Probability</span><strong>${percent}%</strong></div>
+        </div>
+        <div class="prediction-explanation"><p>${predicted ? "The model estimates that this customer may churn. Review the profile and consider whether follow-up is appropriate." : "The model estimates a lower likelihood of churn for this profile. Continue to use customer context when deciding on next steps."}</p></div>
+        <button type="button" class="copy-json-button" id="copy-prediction">Copy prediction JSON</button>
+      </article>`;
 
-        predictionResult.innerHTML = `
-            <div class="loading-message">
-                Analyzing customer data...
-            </div>
-        `;
-
-        try {
-            const formData = new FormData(predictionForm);
-            const customerData = Object.fromEntries(formData.entries());
-
-            // Convert numerical fields into numbers
-            customerData.SeniorCitizen = Number(customerData.SeniorCitizen);
-            customerData.tenure = Number(customerData.tenure);
-            customerData.MonthlyCharges = Number(customerData.MonthlyCharges);
-            customerData.TotalCharges = Number(customerData.TotalCharges);
-
-            const response = await fetch("/predict", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(customerData)
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || data.error || "Prediction failed.");
-            }
-
-            if (data.status !== "success" || !data.prediction) {
-                throw new Error("Invalid response received from the API.");
-            }
-
-            displayPrediction(data.prediction);
-
-        } catch (error) {
-            predictionResult.innerHTML = `
-                <div class="error-message">
-                    <h3>Prediction Error</h3>
-                    <p>${escapeHTML(error.message)}</p>
-                    <p>Please check your inputs and try again.</p>
-                </div>
-            `;
-
-            console.error("Prediction error:", error);
-
-        } finally {
-            predictButton.disabled = false;
-            predictButton.textContent = "Predict Churn";
-        }
+    document.getElementById("copy-prediction").addEventListener("click", async (event) => {
+      const button = event.currentTarget;
+      try {
+        await navigator.clipboard.writeText(resultJson);
+        button.textContent = "Copied";
+      } catch {
+        button.textContent = "Copy unavailable";
+      }
     });
+  }
 
-    // Display prediction results
-    function displayPrediction(prediction) {
-        const probability = Number(prediction.churn_probability);
+  function renderError(error) {
+    const message = error instanceof TypeError
+      ? "Could not reach the prediction service. Check that the Flask API is running and the configured API URL is correct."
+      : error.message;
+    resultRegion.innerHTML = `<div class="error-message" role="alert"><h3>Prediction unavailable</h3><p>${escapeHtml(message)}</p><p>Check the customer details and try again.</p></div>`;
+  }
 
-        if (!Number.isFinite(probability) || probability < 0 || probability > 1) {
-            throw new Error("The API returned an invalid churn probability.");
-        }
-
-        const probabilityPercent = (probability * 100).toFixed(2);
-        const probabilityPosition = probability * 100;
-
-        const isChurnPredicted = prediction.churn_prediction === 1;
-        const churnLabel = prediction.churn_label;
-        const riskCategory = prediction.risk_category;
-
-        const riskClass = String(riskCategory)
-            .toLowerCase()
-            .replace(/\s+/g, "-");
-
-        const predictionClass = isChurnPredicted
-            ? "churn-yes"
-            : "churn-no";
-
-        const resultJSON = JSON.stringify(prediction, null, 2);
-
-        predictionResult.innerHTML = `
-            <div class="prediction-card">
-
-                <div class="prediction-header">
-                    <h2>Prediction Result</h2>
-                    <span class="risk-badge ${riskClass}">
-                        ${escapeHTML(riskCategory)}
-                    </span>
-                </div>
-
-                <div class="probability-section">
-                    <p class="result-label">Churn Probability</p>
-
-                    <h1 class="probability-value">
-                        ${probabilityPercent}%
-                    </h1>
-
-                    <div class="risk-scale">
-
-                        <div class="risk-scale">
-
-    <div class="risk-ruler">
-        <div class="risk-ruler-marker"
-             style="left: ${Math.min(100, Math.max(0, probabilityPosition))}%">
-            <span>${probabilityPercent}%</span>
-        </div>
-    </div>
-
-    <div class="risk-scale-track">
-        <div class="risk-fill"
-             style="width: ${probabilityPosition}%">
-        </div>
-    </div>
-
-    <div class="risk-scale-labels">
-        <span>Very Low</span>
-        <span>Low</span>
-        <span>Medium</span>
-        <span>High</span>
-        <span>Very High</span>
-    </div>
-
-</div>
-
-                <div class="prediction-details">
-
-                    <div class="detail-item">
-                        <span class="detail-label">Churn Prediction</span>
-                        <strong class="${predictionClass}">
-                            ${escapeHTML(churnLabel)}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span class="detail-label">Risk Category</span>
-                        <strong>
-                            ${escapeHTML(riskCategory)}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span class="detail-label">Probability</span>
-                        <strong>${probabilityPercent}%</strong>
-                    </div>
-
-                </div>
-
-                <div class="prediction-explanation">
-                    <h3>What does this mean?</h3>
-                    <p>
-                        ${
-                            isChurnPredicted
-                                ? "The model predicts that this customer is likely to leave the service. Consider taking suitable retention actions."
-                                : "The model predicts that this customer is unlikely to leave the service based on the provided information."
-                        }
-                    </p>
-                </div>
-
-                <button type="button" class="copy-json-button" id="copy-json-button">
-                    Copy Prediction JSON
-                </button>
-
-            </div>
-        `;
-
-        // Copy prediction result as JSON
-        const copyButton = document.getElementById("copy-json-button");
-
-        copyButton.addEventListener("click", async () => {
-            try {
-                await navigator.clipboard.writeText(resultJSON);
-
-                copyButton.textContent = "Copied!";
-
-                setTimeout(() => {
-                    copyButton.textContent = "Copy Prediction JSON";
-                }, 2000);
-
-            } catch (error) {
-                console.error("Copy failed:", error);
-                copyButton.textContent = "Copy failed";
-            }
-        });
-    }
-
-    // Prevent HTML injection in dynamic text
-    function escapeHTML(value) {
-        return String(value).replace(/[&<>"']/g, (character) => {
-            const entities = {
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;",
-                "'": "&#039;"
-            };
-
-            return entities[character];
-        });
-    }
-});
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, (character) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+    })[character]);
+  }
+})();

@@ -1,15 +1,18 @@
 
-from flask import Flask, request, jsonify, render_template
+from pathlib import Path
+
+from flask import Flask, request, jsonify, send_from_directory
 
 from backend.model_loader import load_model
 from backend.validator import validate_customer_data
 from backend.predictor import predict_customer
 
 
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+
 app = Flask(
     __name__,
-    template_folder="../frontend/templates",
-    static_folder="../frontend/static",
+    static_folder=str(FRONTEND_DIR / "static"),
     static_url_path="/static"
 )
 
@@ -41,8 +44,19 @@ def add_cors_headers(response):
 
 # Website landing page
 @app.route("/", methods=["GET"])
+@app.route("/index.html", methods=["GET"])
 def home():
-    return render_template("index.html")
+    return send_from_directory(FRONTEND_DIR, "index.html")
+
+
+@app.route("/methodology.html", methods=["GET"])
+def methodology():
+    return send_from_directory(FRONTEND_DIR, "methodology.html")
+
+
+@app.route("/team.html", methods=["GET"])
+def team():
+    return send_from_directory(FRONTEND_DIR, "team.html")
 
 
 # API health check
