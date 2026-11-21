@@ -13,6 +13,11 @@
     event.preventDefault();
     if (!form.reportValidity()) return;
 
+    if (!apiBaseUrl && window.location?.hostname.endsWith("github.io")) {
+      renderError(new Error("The Render API URL is not configured for this GitHub Pages site. Set CHURN_API_BASE_URL in config.js to enable live predictions."));
+      return;
+    }
+
     const customer = Object.fromEntries(new FormData(form).entries());
     numericFields.forEach((field) => { customer[field] = Number(customer[field]); });
 
